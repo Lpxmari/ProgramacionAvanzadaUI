@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-icon-button',
   imports: [],
   templateUrl: './icon-button.html',
-  styleUrl: './icon-button.css',
+
 })
 export class IconButton {
 

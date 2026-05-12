@@ -1,1 +1,77 @@
-<p>home works!</p>
+<div class="flex flex-col items-center justify-center h-full min-h-[calc(100vh-0px)] gap-6 p-8">
+
+  <!-- Logo grande -->
+  <div class="w-28 h-28 rounded-2xl bg-[#006926] flex items-center justify-center shadow-xl">
+    <svg viewBox="0 0 80 80" class="w-20 h-20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle"
+            font-size="52" font-weight="bold" fill="white">U</text>
+    </svg>
+  </div>
+
+  <!-- Texto de bienvenida -->
+  <div class="text-center">
+    <h1 class="text-2xl font-bold text-[#006926]">
+      Bienvenido a la Página Oficial de la
+    </h1>
+    <h1 class="text-2xl font-bold text-[#006926]">
+      Universidad del Quindío
+    </h1>
+  </div>
+
+  <!-- Descripción breve -->
+  <p class="text-sm text-gray-500 max-w-sm text-center leading-relaxed">
+    Sistema de Triage y Gestión de Solicitudes Académicas del Programa de
+    Ingeniería de Sistemas y Computación.
+  </p>
+
+  <!-- Cards de acceso rápido -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 w-full max-w-2xl">
+
+    <a routerLink="/solicitudes"
+       class="flex flex-col items-center gap-3 p-5 rounded-xl border border-gray-100
+              hover:border-[#65b983] hover:shadow-md bg-white transition-all cursor-pointer group">
+      <div class="w-10 h-10 rounded-lg bg-[#006926]/10 flex items-center justify-center
+                  group-hover:bg-[#006926]/20 transition-colors">
+        <svg class="w-5 h-5 text-[#006926]" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0
+               01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <span class="text-sm font-semibold text-[#006926]">Solicitudes</span>
+      <span class="text-xs text-gray-400 text-center">Gestiona y registra solicitudes</span>
+    </a>
+
+    <a routerLink="/historial"
+       class="flex flex-col items-center gap-3 p-5 rounded-xl border border-gray-100
+              hover:border-[#65b983] hover:shadow-md bg-white transition-all cursor-pointer group">
+      <div class="w-10 h-10 rounded-lg bg-[#006926]/10 flex items-center justify-center
+                  group-hover:bg-[#006926]/20 transition-colors">
+        <svg class="w-5 h-5 text-[#006926]" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <span class="text-sm font-semibold text-[#006926]">Historial</span>
+      <span class="text-xs text-gray-400 text-center">Consulta el historial de cambios</span>
+    </a>
+
+    <div class="flex flex-col items-center gap-3 p-5 rounded-xl border border-gray-100 bg-white">
+      <div class="w-10 h-10 rounded-lg bg-[#65b983]/20 flex items-center justify-center">
+        <svg class="w-5 h-5 text-[#65b983]" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0
+               002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2
+               2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2
+               2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <span class="text-sm font-semibold text-[#65b983]">Reportes</span>
+      <span class="text-xs text-gray-400 text-center">Próximamente disponible</span>
+    </div>
+
+  </div>
+</div>

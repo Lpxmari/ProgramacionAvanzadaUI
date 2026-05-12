@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-checkbox',
   imports: [],
   templateUrl: './checkbox.html',
-  styleUrl: './checkbox.css',
+
 })
 export class Checkbox {
 

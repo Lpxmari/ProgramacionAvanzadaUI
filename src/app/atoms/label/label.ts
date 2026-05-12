@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-label',
   imports: [],
   templateUrl: './label.html',
-  styleUrl: './label.css',
+
 })
 export class Label {
 

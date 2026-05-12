@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-page-title',
   imports: [],
   templateUrl: './page-title.html',
-  styleUrl: './page-title.css',
+
 })
 export class PageTitle {
 

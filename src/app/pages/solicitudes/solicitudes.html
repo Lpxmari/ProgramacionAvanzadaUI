@@ -1,1 +1,484 @@
-<p>solicitudes works!</p>
+<div class="flex flex-col gap-5 p-6">
+
+  <!-- Error banner -->
+  @if (error()) {
+    <div class="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Filtros -->
+  <div [formGroup]="filtros" class="flex flex-wrap gap-3 items-center">
+
+    <!-- Responsable -->
+    <select formControlName="responsableId"
+      class="rounded-full border border-[#006926] px-4 py-2 text-sm text-[#006926]
+             focus:outline-none focus:ring-2 focus:ring-[#65b983] bg-white min-w-[140px]">
+      <option [ngValue]="null">Responsable</option>
+      @for (r of responsables(); track r.id) {
+        <option [ngValue]="r.id">{{ r.nombreCompleto }}</option>
+      }
+    </select>
+
+    <!-- Prioridad -->
+    <select formControlName="prioridad"
+      class="rounded-full border border-[#006926] px-4 py-2 text-sm text-[#006926]
+             focus:outline-none focus:ring-2 focus:ring-[#65b983] bg-white min-w-[120px]">
+      <option value="">Prioridad</option>
+      @for (n of niveles; track n) {
+        <option [value]="n">{{ n }}</option>
+      }
+    </select>
+
+    <!-- Estado -->
+    <select formControlName="estado"
+      class="rounded-full border border-[#006926] px-4 py-2 text-sm text-[#006926]
+             focus:outline-none focus:ring-2 focus:ring-[#65b983] bg-white min-w-[120px]">
+      <option value="">Estado</option>
+      @for (e of estados; track e) {
+        <option [value]="e">{{ e }}</option>
+      }
+    </select>
+
+    <!-- Tipo -->
+    <select formControlName="tipo"
+      class="rounded-full border border-[#006926] px-4 py-2 text-sm text-[#006926]
+             focus:outline-none focus:ring-2 focus:ring-[#65b983] bg-white min-w-[160px]">
+      <option value="">Tipo</option>
+      @for (t of tipos; track t) {
+        <option [value]="t">{{ labelTipo(t) }}</option>
+      }
+    </select>
+
+    <!-- Buscar -->
+    <button (click)="buscar()"
+      class="w-9 h-9 rounded-full bg-[#006926] flex items-center justify-center
+             hover:bg-[#005520] transition-colors shadow-sm">
+      <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
+           stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </button>
+
+    <!-- Limpiar -->
+    <button (click)="limpiar()"
+      class="rounded-full border border-[#006926] px-4 py-2 text-sm text-[#006926]
+             bg-[#006926] text-white hover:bg-[#005520] transition-colors">
+      Limpiar
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm bg-white">
+    <table class="w-full text-sm text-left">
+      <thead class="bg-[#006926] text-white text-xs uppercase tracking-wider">
+        <tr>
+          <th class="px-4 py-3">ID</th>
+          <th class="px-4 py-3">Tipo</th>
+          <th class="px-4 py-3">Descripción</th>
+          <th class="px-4 py-3">Estudiante</th>
+          <th class="px-4 py-3">Responsable</th>
+          <th class="px-4 py-3">Prioridad</th>
+          <th class="px-4 py-3">Estado</th>
+          <th class="px-4 py-3">Fecha</th>
+          <th class="px-4 py-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td colspan="9" class="px-4 py-10 text-center text-gray-400">
+              <div class="flex items-center justify-center gap-2">
+                <svg class="animate-spin w-4 h-4 text-[#65b983]" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+                Cargando solicitudes...
+              </div>
+            </td>
+          </tr>
+        }
+        @for (s of solicitudes(); track s.id) {
+          <tr class="border-t border-gray-50 hover:bg-green-50/40 transition-colors">
+            <td class="px-4 py-3 font-medium text-[#006926]">#{{ s.id }}</td>
+            <td class="px-4 py-3 text-gray-600 max-w-[140px] truncate">{{ labelTipo(s.tipoSolicitud) }}</td>
+            <td class="px-4 py-3 text-gray-500 max-w-[180px] truncate">{{ s.descripcion }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ s.estudiante?.nombreCompleto ?? '-' }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ s.responsableAsignado?.nombreCompleto ?? '-' }}</td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                    [ngClass]="nivelClase(s.prioridad?.nivel)">
+                {{ s.prioridad?.nivel ?? 'Sin asignar' }}
+              </span>
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                    [ngClass]="estadoClase(s.estado)">
+                {{ s.estado }}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-gray-400 text-xs">{{ formatFecha(s.fechaHoraRegistro) }}</td>
+            <td class="px-4 py-3">
+              <div class="flex justify-center gap-2">
+
+                <!-- Ver -->
+                <button (click)="verDetalle(s)" title="Ver detalle"
+                  class="p-1.5 rounded-lg text-[#006926] hover:bg-[#006926]/10 transition-colors">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943
+                         9.542 7-1.274 4.057-5.064 7-9.542 7-4.477
+                         0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </button>
+
+                <!-- Editar -->
+                <button (click)="abrirEditar(s)" title="Editar"
+                  [disabled]="s.estado === 'CERRADA'"
+                  class="p-1.5 rounded-lg text-[#006926] hover:bg-[#006926]/10
+                         transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0
+                         002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828
+                         15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </button>
+
+                <!-- Asignar responsable -->
+                <button (click)="abrirAsignar(s)" title="Asignar responsable"
+                  [disabled]="s.estado === 'CERRADA'"
+                  class="p-1.5 rounded-lg text-[#65b983] hover:bg-[#65b983]/10
+                         transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8
+                         0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                  </svg>
+                </button>
+
+                <!-- Cerrar -->
+                <button (click)="abrirCierre(s)" title="Cerrar solicitud"
+                  [disabled]="s.estado !== 'ATENDIDA'"
+                  class="p-1.5 rounded-lg text-orange-500 hover:bg-orange-50
+                         transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </button>
+
+                <!-- Eliminar -->
+                <button (click)="eliminar(s.id)" title="Eliminar"
+                  [disabled]="s.estado === 'CERRADA'"
+                  class="p-1.5 rounded-lg text-red-500 hover:bg-red-50
+                         transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0
+                         01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1
+                         1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          @if (!loading()) {
+            <tr>
+              <td colspan="9" class="px-4 py-10 text-center text-gray-400 text-sm">
+                No hay solicitudes registradas.
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Botones inferiores -->
+  <div class="flex gap-3">
+    <button (click)="abrirNueva()"
+      class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#65b983] text-white
+             text-sm font-medium hover:bg-[#4da870] transition-colors shadow-sm">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      Nueva Solicitud
+    </button>
+    <button (click)="abrirAsignar()"
+      class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#65b983] text-white
+             text-sm font-medium hover:bg-[#4da870] transition-colors shadow-sm">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+      </svg>
+      Asignar Responsable
+    </button>
+  </div>
+
+</div>
+
+<!-- ===== MODAL: NUEVA / EDITAR SOLICITUD ===== -->
+@if (modalNueva()) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col gap-5 p-6
+                max-h-[90vh] overflow-y-auto">
+
+      <h2 class="text-lg font-bold text-[#006926] border-b border-[#65b983]/30 pb-3">
+        {{ modoEdicion() ? 'Editar Solicitud' : 'Nueva Solicitud' }}
+      </h2>
+
+      <div [formGroup]="formNueva" class="flex flex-col gap-4">
+
+        <!-- ID Estudiante -->
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            ID Estudiante
+          </label>
+          <input formControlName="estudianteId" type="number" placeholder="Ej: 1"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983] focus:border-[#006926]
+                   transition-all" />
+        </div>
+
+        <!-- Tipo -->
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            Tipo de solicitud
+          </label>
+          <select formControlName="tipoSolicitud"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983] focus:border-[#006926]">
+            <option value="">Selecciona un tipo</option>
+            @for (t of tipos; track t) {
+              <option [value]="t">{{ labelTipo(t) }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Canal -->
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            Canal de origen
+          </label>
+          <select formControlName="canalOrigen"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983] focus:border-[#006926]">
+            <option value="">Selecciona un canal</option>
+            @for (c of canales; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Descripción -->
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            Descripción
+          </label>
+          <textarea formControlName="descripcion" placeholder="Describe la solicitud..."
+            rows="3"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983] focus:border-[#006926]
+                   resize-none transition-all">
+          </textarea>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end gap-3 pt-1">
+        <button type="button" (click)="modalNueva.set(false)"
+          class="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-500
+                 hover:bg-gray-50 transition-colors">
+          Cancelar
+        </button>
+        <button (click)="guardarSolicitud()" [disabled]="formNueva.invalid"
+          class="px-5 py-2 text-sm rounded-lg bg-[#006926] text-white font-medium
+                 hover:bg-[#005520] transition-colors disabled:bg-[#65b983] disabled:cursor-not-allowed">
+          {{ modoEdicion() ? 'Guardar cambios' : 'Crear solicitud' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ===== MODAL: ASIGNAR RESPONSABLE ===== -->
+@if (modalAsignar()) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm flex flex-col gap-5 p-6">
+
+      <h2 class="text-lg font-bold text-[#006926] border-b border-[#65b983]/30 pb-3">
+        Asignar Responsable
+      </h2>
+
+      <div [formGroup]="formAsignar" class="flex flex-col gap-4">
+
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            ID de la Solicitud
+          </label>
+          <input formControlName="solicitudId" type="number" placeholder="Ej: 1"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983]" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            Responsable
+          </label>
+          <select formControlName="responsableId"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983]">
+            <option [ngValue]="null">Selecciona un responsable</option>
+            @for (r of responsables(); track r.id) {
+              <option [ngValue]="r.id">{{ r.nombreCompleto }} — {{ r.cargo }}</option>
+            }
+          </select>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" (click)="modalAsignar.set(false)"
+          class="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button (click)="guardarAsignacion()" [disabled]="formAsignar.invalid"
+          class="px-5 py-2 text-sm rounded-lg bg-[#006926] text-white font-medium
+                 hover:bg-[#005520] disabled:bg-[#65b983] disabled:cursor-not-allowed">
+          Asignar
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ===== MODAL: CIERRE ===== -->
+@if (modalCierre()) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm flex flex-col gap-5 p-6">
+
+      <h2 class="text-lg font-bold text-[#006926] border-b border-[#65b983]/30 pb-3">
+        Cerrar Solicitud #{{ solicitudSeleccionada()?.id }}
+      </h2>
+
+      <div [formGroup]="formCierre" class="flex flex-col gap-4">
+
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            Responsable del cierre
+          </label>
+          <select formControlName="responsableId"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983]">
+            <option [ngValue]="null">Selecciona un responsable</option>
+            @for (r of responsables(); track r.id) {
+              <option [ngValue]="r.id">{{ r.nombreCompleto }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-[#006926] uppercase tracking-wide">
+            Observación de cierre
+          </label>
+          <textarea formControlName="observacion" placeholder="Describe el resultado..." rows="3"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-[#65b983] resize-none">
+          </textarea>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" (click)="modalCierre.set(false)"
+          class="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button (click)="guardarCierre()" [disabled]="formCierre.invalid"
+          class="px-5 py-2 text-sm rounded-lg bg-[#006926] text-white font-medium
+                 hover:bg-[#005520] disabled:bg-[#65b983] disabled:cursor-not-allowed">
+          Cerrar solicitud
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ===== MODAL: DETALLE ===== -->
+@if (modalDetalle() && solicitudSeleccionada()) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col gap-4 p-6
+                max-h-[90vh] overflow-y-auto">
+
+      <h2 class="text-lg font-bold text-[#006926] border-b border-[#65b983]/30 pb-3">
+        Detalle — Solicitud #{{ solicitudSeleccionada()!.id }}
+      </h2>
+
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Estado</p>
+          <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                [ngClass]="estadoClase(solicitudSeleccionada()!.estado)">
+            {{ solicitudSeleccionada()!.estado }}
+          </span>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Tipo</p>
+          <p class="font-medium text-gray-700">{{ labelTipo(solicitudSeleccionada()!.tipoSolicitud) }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Estudiante</p>
+          <p class="font-medium text-gray-700">{{ solicitudSeleccionada()!.estudiante?.nombreCompleto ?? '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Responsable</p>
+          <p class="font-medium text-gray-700">{{ solicitudSeleccionada()!.responsableAsignado?.nombreCompleto ?? 'Sin asignar' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Prioridad</p>
+          <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                [ngClass]="nivelClase(solicitudSeleccionada()!.prioridad?.nivel)">
+            {{ solicitudSeleccionada()!.prioridad?.nivel ?? 'Sin asignar' }}
+          </span>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Fecha registro</p>
+          <p class="font-medium text-gray-700">{{ formatFecha(solicitudSeleccionada()!.fechaHoraRegistro) }}</p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-xs text-gray-400 uppercase tracking-wide">Descripción</p>
+          <p class="text-gray-700 leading-relaxed">{{ solicitudSeleccionada()!.descripcion }}</p>
+        </div>
+        @if (solicitudSeleccionada()!.prioridad?.justificacion) {
+          <div class="col-span-2">
+            <p class="text-xs text-gray-400 uppercase tracking-wide">Justificación prioridad</p>
+            <p class="text-gray-600">{{ solicitudSeleccionada()!.prioridad!.justificacion }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button (click)="modalDetalle.set(false)"
+          class="px-5 py-2 text-sm rounded-lg bg-[#006926] text-white font-medium hover:bg-[#005520]">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
