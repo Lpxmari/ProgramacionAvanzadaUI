@@ -81,19 +81,13 @@ export class SolicitudesComponent implements OnInit {
     this.cargarResponsables();
   }
 
-  cargarSolicitudes() {
-    this.loading.set(true);
-    const f = this.filtros.value;
-    this.solicitudService.getAll({
-      estado: f.estado || undefined,
-      tipo: f.tipo || undefined,
-      nivel: f.prioridad || undefined,
-      responsableId: f.responsableId || undefined
-    }).subscribe({
-      next: data => { this.solicitudes.set(data); this.loading.set(false); },
-      error: () => { this.error.set('Error al cargar solicitudes.'); this.loading.set(false); }
-    });
-  }
+ cargarSolicitudes() {
+  this.loading.set(true);
+  this.solicitudService.getAll().subscribe({
+    next: data => { this.solicitudes.set(data); this.loading.set(false); },
+    error: () => { this.error.set('Error al cargar solicitudes.'); this.loading.set(false); }
+  });
+}
 
   cargarResponsables() {
     this.responsableService.getAll().subscribe({

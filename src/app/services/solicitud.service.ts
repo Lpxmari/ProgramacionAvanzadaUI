@@ -103,10 +103,10 @@ export class SolicitudService {
   }
 
   asignarResponsable(solicitudId: number, responsableId: number): Observable<SolicitudDTO> {
-    return this.http.put<SolicitudDTO>(
-      `${this.API}/${solicitudId}/responsable/${responsableId}`, {}
-    );
-  }
+  return this.http.put<SolicitudDTO>(
+    `${this.API}/${solicitudId}/responsable?responsableId=${responsableId}`, {}
+  );
+}
 
   cerrar(id: number, dto: CierreDTO): Observable<SolicitudDTO> {
     return this.http.put<SolicitudDTO>(`${this.API}/${id}/cerrar`, dto);
