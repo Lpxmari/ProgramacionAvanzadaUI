@@ -5,7 +5,7 @@ import { ResponsableDTO } from './solicitud.service';
 
 @Injectable({ providedIn: 'root' })
 export class ResponsableService {
-  private readonly API = 'http://localhost:8080/responsables';
+  private readonly API = 'http://localhost:8080/api/responsables';
 
   constructor(private http: HttpClient) {}
 

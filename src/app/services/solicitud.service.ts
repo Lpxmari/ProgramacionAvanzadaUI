@@ -68,7 +68,7 @@ export interface HistorialDTO {
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudService {
-  private readonly API = 'http://localhost:8080/solicitudes';
+  private readonly API = 'http://localhost:8080/api/solicitudes';
 
   constructor(private http: HttpClient) {}
 
