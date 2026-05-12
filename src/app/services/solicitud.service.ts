@@ -94,19 +94,21 @@ export class SolicitudService {
     return this.http.post<SolicitudDTO>(this.API, dto);
   }
 
-  actualizar(id: number, dto: Partial<CrearSolicitudDTO>): Observable<SolicitudDTO> {
-    return this.http.put<SolicitudDTO>(`${this.API}/${id}`, dto);
+  priorizar(id: number, dto: PrioridadDTO): Observable<string> {
+    return this.http.put(`${this.API}/${id}/priorizar`, dto, { responseType: 'text' });
   }
 
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API}/${id}`);
   }
 
-  asignarResponsable(solicitudId: number, responsableId: number): Observable<SolicitudDTO> {
-  return this.http.put<SolicitudDTO>(
-    `${this.API}/${solicitudId}/responsable?responsableId=${responsableId}`, {}
-  );
-}
+  asignarResponsable(solicitudId: number, responsableId: number): Observable<string> {
+    return this.http.put(
+      `${this.API}/${solicitudId}/responsable?responsableId=${responsableId}`,
+      {},
+      { responseType: 'text' }
+    );
+  }
 
   cerrar(id: number, dto: CierreDTO): Observable<SolicitudDTO> {
     return this.http.put<SolicitudDTO>(`${this.API}/${id}/cerrar`, dto);

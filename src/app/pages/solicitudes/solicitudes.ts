@@ -8,7 +8,8 @@ import {
   TipoSolicitud,
   NivelSolicitud,
   CrearSolicitudDTO,
-  CierreDTO
+  CierreDTO,
+  PrioridadDTO
 } from '../../services/solicitud.service';
 import { ResponsableService } from '../../services/responsable.service';
 import { ResponsableDTO } from '../../services/solicitud.service';
@@ -39,9 +40,18 @@ export class SolicitudesComponent implements OnInit {
   modalAsignar = signal(false);
   modalCierre = signal(false);
   modalDetalle = signal(false);
+  modalTriage = signal(false);
 
   solicitudSeleccionada = signal<SolicitudDTO | null>(null);
   modoEdicion = signal(false);
+
+  // Form triage / priorizar
+  formTriage = new FormGroup({
+    nivel: new FormControl<NivelSolicitud | ''>('', Validators.required),
+    impactoAcademico: new FormControl('', Validators.required),
+    justificacion: new FormControl('', Validators.required),
+    vigencia: new FormControl('', Validators.required)
+  });
 
   // Form nueva solicitud
   formNueva = new FormGroup({
@@ -122,16 +132,25 @@ export class SolicitudesComponent implements OnInit {
     this.modalNueva.set(true);
   }
 
+  abrirTriage(s: SolicitudDTO) {
+    this.solicitudSeleccionada.set(s);
+    this.formTriage.reset();
+    if (s.prioridad) {
+      this.formTriage.patchValue({
+        nivel: s.prioridad.nivel,
+        impactoAcademico: s.prioridad.impactoAcademico,
+        justificacion: s.prioridad.justificacion,
+        vigencia: s.prioridad.vigencia ?? ''
+      });
+    }
+    this.modalTriage.set(true);
+  }
+
   guardarSolicitud() {
     if (this.formNueva.invalid) return;
     const val = this.formNueva.value as CrearSolicitudDTO;
 
-    if (this.modoEdicion() && this.solicitudSeleccionada()) {
-      this.solicitudService.actualizar(this.solicitudSeleccionada()!.id, val).subscribe({
-        next: () => { this.modalNueva.set(false); this.cargarSolicitudes(); },
-        error: () => this.error.set('Error al actualizar.')
-      });
-    } else {
+    if ( !( this.modoEdicion() && this.solicitudSeleccionada() )) {
       this.solicitudService.crear(val).subscribe({
         next: () => { this.modalNueva.set(false); this.cargarSolicitudes(); },
         error: () => this.error.set('Error al crear solicitud.')
@@ -180,6 +199,23 @@ export class SolicitudesComponent implements OnInit {
     this.solicitudService.cerrar(this.solicitudSeleccionada()!.id, dto).subscribe({
       next: () => { this.modalCierre.set(false); this.cargarSolicitudes(); },
       error: () => this.error.set('Error al cerrar solicitud.')
+    });
+  }
+
+  guardarTriage() {
+    if (this.formTriage.invalid || !this.solicitudSeleccionada()) return;
+    const dto: PrioridadDTO = {
+      nivel: this.formTriage.value.nivel as NivelSolicitud,
+      impactoAcademico: this.formTriage.value.impactoAcademico!,
+      justificacion: this.formTriage.value.justificacion!,
+      vigencia: this.formTriage.value.vigencia!
+    };
+    this.solicitudService.priorizar(this.solicitudSeleccionada()!.id, dto).subscribe({
+      next: () => { this.modalTriage.set(false); this.cargarSolicitudes(); },
+      error: (e) => {
+        console.log(e);
+        this.error.set('Error al asignar prioridad.')
+      }
     });
   }
 
