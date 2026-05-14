@@ -17,7 +17,7 @@ export const routes: Routes = [
       import('./organisms/layout/layout').then(m => m.LayoutComponent),
     children: [
       {
-        path: 'home',
+        path: 'home-admin',
         loadComponent: () =>
           import('./pages/home/home').then(m => m.HomeComponent)
       },
@@ -30,6 +30,11 @@ export const routes: Routes = [
         path: 'historial',
         loadComponent: () =>
           import('./pages/historial/historial').then(m => m.HistorialComponent)
+      },
+      {
+        path: 'home-responsable',
+        loadComponent: () =>
+          import('./pages/responsable/responsable').then(m => m.ResponsableComponent)
       }
     ]
   },

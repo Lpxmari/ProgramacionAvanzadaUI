@@ -1,0 +1,328 @@
+<div class="flex flex-col gap-5 p-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+
+    <div>
+      <h1 class="text-2xl font-bold text-[#006926]">
+        Solicitudes Asignadas
+      </h1>
+
+      <p class="text-sm text-gray-400">
+        Gestión de solicitudes del responsable
+      </p>
+    </div>
+
+    <button (click)="cargarSolicitudesResponsable()"
+      class="px-4 py-2 rounded-full bg-[#006926] text-white text-sm
+             hover:bg-[#005520] transition-colors shadow-sm">
+
+      Actualizar
+
+    </button>
+
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+
+    <div class="bg-red-50 border border-red-200 text-red-600
+                text-sm px-4 py-3 rounded-lg">
+
+      {{ error() }}
+
+    </div>
+
+  }
+
+  <!-- Tabla -->
+  <div class="overflow-x-auto rounded-xl border border-gray-100
+              shadow-sm bg-white">
+
+    <table class="w-full text-sm text-left">
+
+      <thead class="bg-[#006926] text-white text-xs uppercase tracking-wider">
+
+        <tr>
+
+          <th class="px-4 py-3">ID</th>
+
+          <th class="px-4 py-3">Tipo</th>
+
+          <th class="px-4 py-3">Descripción</th>
+
+          <th class="px-4 py-3">Estudiante</th>
+
+          <th class="px-4 py-3">Prioridad</th>
+
+          <th class="px-4 py-3">Estado</th>
+
+          <th class="px-4 py-3">Fecha</th>
+
+          <th class="px-4 py-3 text-center">Acciones</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        @if (loading()) {
+
+          <tr>
+
+            <td colspan="8"
+                class="px-4 py-10 text-center text-gray-400">
+
+              Cargando solicitudes...
+
+            </td>
+
+          </tr>
+
+        }
+
+        @for (s of solicitudes(); track s.id) {
+
+          <tr class="border-t border-gray-50
+                     hover:bg-green-50/40 transition-colors">
+
+            <td class="px-4 py-3 font-medium text-[#006926]">
+
+              #{{ s.id }}
+
+            </td>
+
+            <td class="px-4 py-3 text-gray-600">
+
+              {{ labelTipo(s.tipoSolicitud) }}
+
+            </td>
+
+            <td class="px-4 py-3 text-gray-500 max-w-[220px] truncate">
+
+              {{ s.descripcion }}
+
+            </td>
+
+            <td class="px-4 py-3 text-gray-600">
+
+              {{ s.estudiante?.nombreCompleto ?? '-' }}
+
+            </td>
+
+            <td class="px-4 py-3">
+
+              <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                    [ngClass]="nivelClase(s.prioridad?.nivel)">
+
+                {{ s.prioridad?.nivel ?? 'Sin prioridad' }}
+
+              </span>
+
+            </td>
+
+            <td class="px-4 py-3">
+
+              <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                    [ngClass]="estadoClase(s.estado)">
+
+                {{ s.estado }}
+
+              </span>
+
+            </td>
+
+            <td class="px-4 py-3 text-gray-400 text-xs">
+
+              {{ formatFecha(s.fechaHoraRegistro) }}
+
+            </td>
+
+            <td class="px-4 py-3">
+
+              <div class="flex justify-center gap-2">
+
+                <!-- Ver -->
+                <button (click)="verDetalle(s)"
+                  title="Ver detalle"
+                  class="p-1.5 rounded-lg text-[#006926]
+                         hover:bg-[#006926]/10 transition-colors">
+
+                  👁️
+
+                </button>
+
+                <!-- Atender -->
+                <button (click)="atenderSolicitud(s)"
+                  [disabled]="s.estado === 'ATENDIDA' || s.estado === 'CERRADA'"
+                  title="Marcar como atendida"
+                  class="p-1.5 rounded-lg text-green-600
+                         hover:bg-green-50 transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed">
+
+                  ✅
+
+                </button>
+
+                <!-- Cerrar -->
+                <button (click)="abrirCierre(s)"
+                  [disabled]="s.estado !== 'ATENDIDA'"
+                  title="Cerrar solicitud"
+                  class="p-1.5 rounded-lg text-orange-500
+                         hover:bg-orange-50 transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed">
+
+                  🔒
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        } @empty {
+
+          @if (!loading()) {
+
+            <tr>
+
+              <td colspan="8"
+                  class="px-4 py-10 text-center
+                         text-gray-400 text-sm">
+
+                No tienes solicitudes asignadas.
+
+              </td>
+
+            </tr>
+
+          }
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- MODAL DETALLE -->
+@if (modalDetalle() && solicitudSeleccionada()) {
+
+  <div class="fixed inset-0 bg-black/40
+              flex items-center justify-center z-50 p-4">
+
+    <div class="bg-white rounded-2xl shadow-2xl
+                w-full max-w-lg flex flex-col gap-4 p-6">
+
+      <h2 class="text-lg font-bold text-[#006926]">
+
+        Solicitud #{{ solicitudSeleccionada()!.id }}
+
+      </h2>
+
+      <div class="flex flex-col gap-3 text-sm">
+
+        <div>
+          <span class="font-semibold">Tipo:</span>
+          {{ labelTipo(solicitudSeleccionada()!.tipoSolicitud) }}
+        </div>
+
+        <div>
+          <span class="font-semibold">Estado:</span>
+          {{ solicitudSeleccionada()!.estado }}
+        </div>
+
+        <div>
+          <span class="font-semibold">Estudiante:</span>
+          {{ solicitudSeleccionada()!.estudiante?.nombreCompleto }}
+        </div>
+
+        <div>
+          <span class="font-semibold">Descripción:</span>
+          {{ solicitudSeleccionada()!.descripcion }}
+        </div>
+
+      </div>
+
+      <div class="flex justify-end">
+
+        <button (click)="modalDetalle.set(false)"
+          class="px-5 py-2 rounded-lg bg-[#006926]
+                 text-white hover:bg-[#005520]">
+
+          Cerrar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- MODAL CIERRE -->
+@if (modalCierre()) {
+
+  <div class="fixed inset-0 bg-black/40
+              flex items-center justify-center z-50 p-4">
+
+    <div class="bg-white rounded-2xl shadow-2xl
+                w-full max-w-md flex flex-col gap-5 p-6">
+
+      <h2 class="text-lg font-bold text-[#006926]">
+
+        Cerrar Solicitud
+
+      </h2>
+
+      <div [formGroup]="formCierre"
+           class="flex flex-col gap-4">
+
+        <textarea
+          formControlName="observacion"
+          rows="4"
+          placeholder="Describe el cierre..."
+          class="w-full rounded-lg border border-gray-200
+                 px-3 py-2.5 text-sm resize-none
+                 focus:outline-none focus:ring-2
+                 focus:ring-[#65b983]">
+        </textarea>
+
+      </div>
+
+      <div class="flex justify-end gap-3">
+
+        <button (click)="modalCierre.set(false)"
+          class="px-4 py-2 rounded-lg border
+                 border-gray-200 text-gray-500
+                 hover:bg-gray-50">
+
+          Cancelar
+
+        </button>
+
+        <button (click)="guardarCierre()"
+          [disabled]="formCierre.invalid"
+          class="px-5 py-2 rounded-lg bg-[#006926]
+                 text-white hover:bg-[#005520]
+                 disabled:bg-[#65b983]">
+
+          Confirmar cierre
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

@@ -43,4 +43,19 @@ export class AuthService {
   private hasToken(): boolean {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }
+
+  private decodePayload(token: string): any {
+    try {
+      const payload = token.split(".")[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    } catch {
+      return null;
+    }
+  }
+
+  public getPayload(): any {
+    const token = this.getToken();
+    return token ? this.decodePayload(token) : null;
+  }
 }

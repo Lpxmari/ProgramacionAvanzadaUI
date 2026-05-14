@@ -110,11 +110,82 @@ export class SolicitudService {
     );
   }
 
-  cerrar(id: number, dto: CierreDTO): Observable<SolicitudDTO> {
-    return this.http.put<SolicitudDTO>(`${this.API}/${id}/cerrar`, dto);
+  filtrarSolicitudes(
+    responsable?: string,
+    nivel?: string,
+    estado?: string,
+    tipoSolicitud?: string
+  ): Observable<SolicitudDTO[]> {
+
+    let params: string[] = [];
+
+    if (responsable) {
+      params.push(`responsable=${encodeURIComponent(responsable)}`);
+    }
+
+    if (nivel) {
+      params.push(`nivel=${nivel}`);
+    }
+
+    if (estado) {
+      params.push(`estado=${estado}`);
+    }
+
+    if (tipoSolicitud) {
+      params.push(`tipoSolicitud=${tipoSolicitud}`);
+    }
+
+    const query = params.length ? `?${params.join('&')}` : '';
+
+    return this.http.get<SolicitudDTO[]>(
+      `${this.API}/filtrar${query}`
+    );
   }
 
   getHistorial(id: number): Observable<HistorialDTO[]> {
     return this.http.get<HistorialDTO[]>(`${this.API}/${id}/historial`);
   }
+
+  cerrar(
+    idSolicitud: number,
+    dto: CierreDTO
+  ): Observable<string> {
+
+    return this.http.put(
+      `${this.API}/${idSolicitud}/cerrar`,
+      dto,
+      { responseType: 'text' }
+    );
+
+  }
+
+  atender(
+    idSolicitud: number,
+    observaciones?: string
+  ): Observable<string> {
+
+    let url = `${this.API}/${idSolicitud}/atender`;
+
+    if (observaciones && observaciones.trim() !== '') {
+      url += `?observaciones=${encodeURIComponent(observaciones)}`;
+    }
+
+    return this.http.put(
+      url,
+      {},
+      { responseType: 'text' }
+    );
+
+  }
+
+  listarPorResponsable(
+    idResponsable: number
+  ): Observable<SolicitudDTO[]> {
+
+    return this.http.get<SolicitudDTO[]>(
+      `${this.API}/responsable/${idResponsable}`
+    );
+
+  }
+
 }

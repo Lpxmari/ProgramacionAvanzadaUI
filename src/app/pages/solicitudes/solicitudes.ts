@@ -105,7 +105,40 @@ export class SolicitudesComponent implements OnInit {
     });
   }
 
-  buscar() { this.cargarSolicitudes(); }
+  buscar() {
+
+    this.loading.set(true);
+    this.error.set('');
+
+    const filtros = this.filtros.value;
+
+    const responsableSeleccionado = this.responsables()
+      .find(r => r.id === filtros.responsableId);
+
+    const responsable = responsableSeleccionado?.nombreCompleto;
+
+    this.solicitudService.filtrarSolicitudes(
+      responsable || undefined,
+      filtros.prioridad || undefined,
+      filtros.estado || undefined,
+      filtros.tipo || undefined
+    ).subscribe({
+
+      next: (data) => {
+        this.solicitudes.set(data);
+        this.loading.set(false);
+      },
+
+      error: (err) => {
+        console.error(err);
+
+        this.error.set('Error al filtrar solicitudes.');
+
+        this.loading.set(false);
+      }
+
+    });
+  }
 
   limpiar() {
     this.filtros.reset();
