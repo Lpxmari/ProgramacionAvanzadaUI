@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ResponsableDTO } from './solicitud.service';
+import { ResponsableDTO } from '../shared/models/usuario.model';
 
 @Injectable({ providedIn: 'root' })
 export class ResponsableService {

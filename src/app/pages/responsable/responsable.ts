@@ -1,15 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { SolicitudService } from '../../core/services/solicitud.service';
 import {
-  SolicitudService,
   SolicitudDTO,
   EstadoSolicitud,
   TipoSolicitud,
   NivelSolicitud,
   CierreDTO
-} from '../../core/services/solicitud.service';
+} from '../../core/shared/models/solicitud.model';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({

@@ -1,7 +1,8 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SolicitudService, HistorialDTO, EstadoSolicitud } from '../../core/services/solicitud.service';
+import { SolicitudService } from '../../core/services/solicitud.service';
+import { HistorialDTO, EstadoSolicitud } from '../../core/shared/models/solicitud.model';
 
 @Component({
   selector: 'app-historial',

@@ -1,8 +1,8 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { SolicitudService } from '../../core/services/solicitud.service';
 import {
-  SolicitudService,
   SolicitudDTO,
   EstadoSolicitud,
   TipoSolicitud,
@@ -10,9 +10,9 @@ import {
   CrearSolicitudDTO,
   CierreDTO,
   PrioridadDTO
-} from '../../core/services/solicitud.service';
+} from '../../core/shared/models/solicitud.model';
 import { ResponsableService } from '../../core/services/responsable.service';
-import { ResponsableDTO } from '../../core/services/solicitud.service';
+import { ResponsableDTO } from '../../core/shared/models/usuario.model';
 
 @Component({
   selector: 'app-solicitudes',
