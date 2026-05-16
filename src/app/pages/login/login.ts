@@ -28,11 +28,7 @@ export class LoginComponent {
     this.auth.login(this.form.value as { username: string; password: string }).subscribe({
       next: () => {
         const role = this.auth.getPayload()?.rol;
-        if(role== "ROLE_ADMIN"){
-          this.router.navigate(['/home-admin']);
-        }else if(role == "ROLE_RESPONSABLE"){
-          this.router.navigate(['/home-responsable']);
-        }
+          this.router.navigate(['/home']);
       },
       error: () => {
         this.error.set('Usuario o contraseña incorrectos.');

@@ -40,7 +40,7 @@ export class AuthService {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  private hasToken(): boolean {
+  hasToken(): boolean {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }
 

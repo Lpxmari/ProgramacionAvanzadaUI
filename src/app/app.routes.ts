@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { noAuthGuard } from './guards/no-auth.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -9,17 +11,19 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./pages/login/login').then(m => m.LoginComponent)
+      import('./pages/login/login').then(m => m.LoginComponent),
+    canActivate: [noAuthGuard]
   },
   {
     path: '',
     loadComponent: () =>
       import('./organisms/layout/layout').then(m => m.LayoutComponent),
+    canActivate: [authGuard],
     children: [
       {
-        path: 'home-admin',
+        path: 'home',
         loadComponent: () =>
-          import('./pages/home/home').then(m => m.HomeComponent)
+          import('./pages/home/home').then(m => m.HomeComponent)  
       },
       {
         path: 'solicitudes',
@@ -32,7 +36,7 @@ export const routes: Routes = [
           import('./pages/historial/historial').then(m => m.HistorialComponent)
       },
       {
-        path: 'home-responsable',
+        path: 'solicitudes-responsable',
         loadComponent: () =>
           import('./pages/responsable/responsable').then(m => m.ResponsableComponent)
       }
