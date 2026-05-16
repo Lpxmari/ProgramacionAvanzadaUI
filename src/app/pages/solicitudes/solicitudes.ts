@@ -10,9 +10,9 @@ import {
   CrearSolicitudDTO,
   CierreDTO,
   PrioridadDTO
-} from '../../services/solicitud.service';
-import { ResponsableService } from '../../services/responsable.service';
-import { ResponsableDTO } from '../../services/solicitud.service';
+} from '../../core/services/solicitud.service';
+import { ResponsableService } from '../../core/services/responsable.service';
+import { ResponsableDTO } from '../../core/services/solicitud.service';
 
 @Component({
   selector: 'app-solicitudes',

@@ -9,8 +9,8 @@ import {
   TipoSolicitud,
   NivelSolicitud,
   CierreDTO
-} from '../../services/solicitud.service';
-import { AuthService } from '../../services/auth.service';
+} from '../../core/services/solicitud.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-responsable',
