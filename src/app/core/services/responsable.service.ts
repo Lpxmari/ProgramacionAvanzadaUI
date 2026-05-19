@@ -12,4 +12,21 @@ export class ResponsableService {
   getAll(): Observable<ResponsableDTO[]> {
     return this.http.get<ResponsableDTO[]>(this.API);
   }
+
+  atenderSolicitud(
+  solicitudId: number,
+  observaciones: string
+) {
+
+  return this.http.put(
+    `http://localhost:8080/api/solicitudes/${solicitudId}/atender`,
+    {},
+    {
+      params: {
+        observaciones
+      }
+    }
+  );
+
+}
 }

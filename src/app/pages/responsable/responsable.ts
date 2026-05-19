@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SolicitudService } from '../../core/services/solicitud.service';
+import { ResponsableService } from '../../core/services/responsable.service';
 import {
   SolicitudDTO,
   EstadoSolicitud,
@@ -17,6 +18,8 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './responsable.html'
 })
+
+
 export class ResponsableComponent implements OnInit {
 
   solicitudes = signal<SolicitudDTO[]>([]);
@@ -33,7 +36,8 @@ export class ResponsableComponent implements OnInit {
   });
 
   constructor(
-    private solicitudService: SolicitudService,
+    private solicitudService: SolicitudService, 
+    private responsableService: ResponsableService,
     private authService: AuthService
   ) {}
 
@@ -41,7 +45,7 @@ export class ResponsableComponent implements OnInit {
     this.cargarSolicitudesResponsable();
   }
 
-  cargarSolicitudesResponsable() {
+  cargarSolicitudesResponsable() {  
 
     console.log( this.authService.getPayload() );
 
@@ -80,31 +84,82 @@ export class ResponsableComponent implements OnInit {
 
   }
 
+  modalAtender = signal(false);
+
+  formAtender = new FormGroup({
+
+    solucion: new FormControl('', Validators.required),
+
+    observaciones: new FormControl(''),
+
+    fechaAtencion: new FormControl(
+      new Date().toISOString().substring(0, 16),
+      Validators.required
+    )
+
+  });
+
   atenderSolicitud(s: SolicitudDTO) {
 
-    const observaciones = prompt('Observaciones de atención (opcional):');
+  this.solicitudSeleccionada.set(s);
 
-    this.loading.set(true);
+  this.formAtender.reset({
 
-    this.solicitudService
-      .atender(s.id, observaciones ?? '')
+    solucion: '',
+
+    observaciones: '',
+
+    fechaAtencion: new Date()
+      .toISOString()
+      .substring(0, 16)
+
+  });
+
+  this.modalAtender.set(true);
+  }
+
+  guardarAtencion() {
+
+    if (
+      this.formAtender.invalid ||
+      !this.solicitudSeleccionada()
+    ) return;
+
+    const observaciones = `
+    Solución aplicada:
+    ${this.formAtender.value.solucion}
+
+    Observaciones:
+    ${this.formAtender.value.observaciones}
+
+    Fecha atención:
+    ${this.formAtender.value.fechaAtencion}
+    `;
+
+    console.log(observaciones);
+
+    this.responsableService
+      .atenderSolicitud(
+        this.solicitudSeleccionada()!.id,
+        observaciones
+      )
       .subscribe({
 
         next: () => {
 
-          this.cargarSolicitudesResponsable();
+          this.error.set('');
 
-          this.loading.set(false);
+          this.modalAtender.set(false);
+
+          this.cargarSolicitudesResponsable();
 
         },
 
-        error: (err) => {
+        error: () => {
 
-          console.error(err);
-
-          this.error.set('Error al marcar solicitud como atendida.');
-
-          this.loading.set(false);
+          this.error.set(
+            'Error al marcar solicitud como atendida.'
+          );
 
         }
 
