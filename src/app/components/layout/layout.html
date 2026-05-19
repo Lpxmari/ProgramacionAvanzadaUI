@@ -40,8 +40,10 @@
             Inicio
           </a>
 
+          
+
           <!-- Solicitudes -->
-          <a routerLink="/solicitudes" routerLinkActive="bg-white/15 font-semibold"
+          <a [routerLink]="role === 'ROLE_RESPONSABLE' ? '/solicitudes-responsable' : '/solicitudes'" routerLinkActive="bg-white/15 font-semibold"
              class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/80
                     hover:bg-white/10 hover:text-white transition-all duration-150 group">
             <svg class="w-5 h-5 flex-shrink-0 text-white/70 group-hover:text-white transition-colors"

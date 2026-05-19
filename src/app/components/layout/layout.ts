@@ -9,7 +9,13 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './layout.html',
 })
 export class LayoutComponent {
-  constructor(private auth: AuthService) {}
+
+  role: string = "";
+
+  constructor(private auth: AuthService) {
+    this.role = this.auth.getPayload().rol || "";
+    console.log(this.role);
+  }
 
   logout() {
     this.auth.logout();

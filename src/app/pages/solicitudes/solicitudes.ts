@@ -13,6 +13,7 @@ import {
 } from '../../core/shared/models/solicitud.model';
 import { ResponsableService } from '../../core/services/responsable.service';
 import { ResponsableDTO } from '../../core/shared/models/usuario.model';
+import { IAService } from '../../core/services/ia.service';
 
 @Component({
   selector: 'app-solicitudes',
@@ -26,6 +27,8 @@ export class SolicitudesComponent implements OnInit {
   responsables = signal<ResponsableDTO[]>([]);
   loading = signal(false);
   error = signal('');
+  resumenIA = signal<string>('');
+  loadingIA = signal(false);
 
   // Filtros
   filtros = new FormGroup({
@@ -83,7 +86,8 @@ export class SolicitudesComponent implements OnInit {
 
   constructor(
     private solicitudService: SolicitudService,
-    private responsableService: ResponsableService
+    private responsableService: ResponsableService,
+    private iaService: IAService
   ) {}
 
   ngOnInit() {
@@ -154,6 +158,7 @@ export class SolicitudesComponent implements OnInit {
   }
 
   abrirEditar(s: SolicitudDTO) {
+
     this.modoEdicion.set(true);
     this.solicitudSeleccionada.set(s);
     this.formNueva.patchValue({
@@ -163,6 +168,7 @@ export class SolicitudesComponent implements OnInit {
       estudianteId: s.estudiante?.id ?? null
     });
     this.modalNueva.set(true);
+
   }
 
   abrirTriage(s: SolicitudDTO) {
@@ -254,9 +260,28 @@ export class SolicitudesComponent implements OnInit {
 
   // Ver detalle
   verDetalle(s: SolicitudDTO) {
-    this.solicitudSeleccionada.set(s);
-    this.modalDetalle.set(true);
-  }
+
+  this.solicitudSeleccionada.set(s);
+  this.resumenIA.set('');
+  this.loadingIA.set(true);
+  this.modalDetalle.set(true);
+  this.iaService.resumir(s.id).subscribe({
+
+    next: (resumen) => {
+      this.resumenIA.set(resumen.token);
+      this.loadingIA.set(false);
+    },
+
+    error: (err) => {
+      console.error('Error IA:', err);
+      this.resumenIA.set(
+        'No fue posible generar el resumen automático.'
+      );
+      this.loadingIA.set(false);
+    }
+
+  });
+}
 
   // Helpers UI
   estadoClase(estado: EstadoSolicitud): string {

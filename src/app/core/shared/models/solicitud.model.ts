@@ -49,3 +49,7 @@ export interface HistorialDTO {
   observaciones: string;
   responsableAccion: ResponsableDTO;
 }
+
+export interface RespuestaIA {
+  token: string;
+}

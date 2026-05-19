@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { noAuthGuard } from './core/guards/no-auth.guard';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -28,7 +29,11 @@ export const routes: Routes = [
       {
         path: 'solicitudes',
         loadComponent: () =>
-          import('./pages/solicitudes/solicitudes').then(m => m.SolicitudesComponent)
+          import('./pages/solicitudes/solicitudes').then(m => m.SolicitudesComponent),
+          canActivate: [roleGuard],
+          data: {
+            role: 'ROLE_ADMIN'
+          }
       },
       {
         path: 'historial',
@@ -38,7 +43,11 @@ export const routes: Routes = [
       {
         path: 'solicitudes-responsable',
         loadComponent: () =>
-          import('./pages/responsable/responsable').then(m => m.ResponsableComponent)
+          import('./pages/responsable/responsable').then(m => m.ResponsableComponent),
+          canActivate: [roleGuard],
+          data: {
+            role: 'ROLE_RESPONSABLE'
+          }
       }
     ]
   },
