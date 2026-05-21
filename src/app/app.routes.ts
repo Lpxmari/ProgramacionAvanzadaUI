@@ -48,8 +48,18 @@ export const routes: Routes = [
           data: {
             role: 'ROLE_RESPONSABLE'
           }
+      },
+      {
+        path: 'mis-solicitudes',
+        loadComponent: () =>
+          import('./pages/estudiante/estudiante').then(m => m.EstudianteComponent),
+          canActivate: [roleGuard],
+          data: {
+            role: 'ROLE_ESTUDIANTE'
+          }
       }
     ]
   },
   { path: '**', redirectTo: 'login' }
+  
 ];

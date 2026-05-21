@@ -17,6 +17,7 @@ export interface PrioridadDTO {
 }
 
 export interface SolicitudDTO {
+
   id: number;
   descripcion: string;
   fechaHoraRegistro: string;
@@ -26,6 +27,9 @@ export interface SolicitudDTO {
   estudiante: EstudianteDTO;
   responsableAsignado: ResponsableDTO | null;
   prioridad: PrioridadDTO | null;
+  solucion?: string;
+  observaciones?: string;
+  fechaAtencion?: string;
 }
 
 export interface CrearSolicitudDTO {
@@ -53,3 +57,4 @@ export interface HistorialDTO {
 export interface RespuestaIA {
   token: string;
 }
+

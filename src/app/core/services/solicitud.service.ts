@@ -79,6 +79,16 @@ export class SolicitudService {
     );
   }
 
+  listarPorEstudiante(
+    estudianteId: number
+  ): Observable<SolicitudDTO[]> {
+
+    return this.http.get<SolicitudDTO[]>(
+      `${this.API}/estudiante/${estudianteId}`
+    );
+
+  }
+
   getHistorial(id: number): Observable<HistorialDTO[]> {
     return this.http.get<HistorialDTO[]>(`${this.API}/${id}/historial`);
   }
