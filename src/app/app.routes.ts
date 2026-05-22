@@ -6,7 +6,7 @@ import { roleGuard } from './core/guards/role.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
@@ -57,6 +57,16 @@ export const routes: Routes = [
           data: {
             role: 'ROLE_ESTUDIANTE'
           }
+      },
+      {
+        path: 'mi-historial',
+        loadComponent: () =>
+          import('./pages/historial-estudiante/historial-estudiante')
+            .then(m => m.HistorialEstudianteComponent),
+        canActivate: [roleGuard],
+        data: {
+          role: 'ROLE_ESTUDIANTE'
+        }
       }
     ]
   },
