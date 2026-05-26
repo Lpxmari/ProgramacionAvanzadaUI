@@ -6,7 +6,7 @@ import { LoginRequest, LoginResponse } from '../shared/models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = 'https://proyectoavanzada-production.up.railway.app/api';
   private readonly TOKEN_KEY = 'jwt_token';
 
   isLoggedIn = signal<boolean>(this.hasToken());

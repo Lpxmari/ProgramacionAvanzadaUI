@@ -12,7 +12,7 @@ import {
 export class HistorialService {
 
   private apiUrl =
-    'http://localhost:8080/api/historiales';
+    'https://proyectoavanzada-production.up.railway.app/api/historiales';
 
   constructor(
     private http: HttpClient

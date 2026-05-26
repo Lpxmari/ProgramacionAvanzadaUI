@@ -5,7 +5,7 @@ import { CierreDTO, CrearSolicitudDTO, EstadoSolicitud, HistorialDTO, NivelSolic
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudService {
-  private readonly API = 'http://localhost:8080/api/solicitudes';
+  private readonly API = 'https://proyectoavanzada-production.up.railway.app/api/solicitudes';
 
   constructor(private http: HttpClient) {}
 

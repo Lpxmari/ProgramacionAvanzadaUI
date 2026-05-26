@@ -5,7 +5,7 @@ import { ResponsableDTO } from '../shared/models/usuario.model';
 
 @Injectable({ providedIn: 'root' })
 export class ResponsableService {
-  private readonly API = 'http://localhost:8080/api/responsables';
+  private readonly API = 'https://proyectoavanzada-production.up.railway.app/api/responsables';
 
   constructor(private http: HttpClient) {}
 
@@ -19,14 +19,15 @@ export class ResponsableService {
 ) {
 
   return this.http.put(
-    `http://localhost:8080/api/solicitudes/${solicitudId}/atender`,
-    {},
-    {
-      params: {
-        observaciones
-      }
+  `https://proyectoavanzada-production.up.railway.app/api/solicitudes/${solicitudId}/atender`,
+  {}, // body
+  {
+    responseType: 'text',
+    params: {
+      observaciones
     }
-  );
+  }
+);
 
 }
 }

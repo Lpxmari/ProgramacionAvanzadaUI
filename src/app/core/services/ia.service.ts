@@ -5,7 +5,7 @@ import { RespuestaIA } from '../shared/models/solicitud.model';
 
 @Injectable({ providedIn: 'root' })
 export class IAService {
-  private readonly API = 'http://localhost:8080/api/ai';
+  private readonly API = 'https://proyectoavanzada-production.up.railway.app/api/ai';
 
   constructor(private http: HttpClient) {}
 
